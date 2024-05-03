@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.my.gyun.repository.BoardDao">
+	<resultMap id="BoardResultMap" type="com.my.gyun.VO.Board">
+	    <result property="seq" column="SEQ"/>
+	    <result property="title" column="TITLE"/>
+	    <result property="content" column="CONTENT"/>
+	    <result property="name" column="NAME"/>
+	    <result property="regDate" column="REGDATE"/>
+	</resultMap>
+	<insert id="insertBoard">
+	    INSERT INTO 
+	    	BOARD_TBL (
+	    	SEQ, 
+	    	TITLE, 
+	    	CONTENT, 
+	    	NAME, 
+	    	REGDATE)
+	    VALUES(
+		    (SELECT NVL(MAX(seq), 0) + 1 FROM BOARD_TBL), 
+		    #{title}, 
+		    #{content}, 
+		    #{name}, 
+		    #{regDate})
+	</insert>
+	<select id="listBoard" resultMap="BoardResultMap">
+		SELECT
+			SEQ,
+			TITLE,
+			CONTENT,
+			NAME,
+			REGDATE
+		FROM
+			BOARD_TBL
+		ORDER BY
+			SEQ DESC
+	</select>
+	<select id="findBySeq" resultMap="BoardResultMap">
+		SELECT
+			SEQ,
+			TITLE,
+			CONTENT,
+			NAME,
+			REGDATE
+		FROM
+			BOARD_TBL
+		WHERE
+			SEQ = #{seq, jdbcType=INTEGER}
+	</select>
+	<update id="update" parameterType="com.my.gyun.VO.Board">
+	    UPDATE BOARD_TBL
+	    SET
+	        TITLE = #{title},
+	        CONTENT = #{content}
+	    WHERE
+	        SEQ = #{seq}
+	</update>
+	<delete id="delete" parameterType="int">
+		DELETE FROM 
+			BOARD_TBL
+		WHERE
+			SEQ = #{seq, jdbcType=INTEGER}
+		
+	</delete>
+</mapper>
